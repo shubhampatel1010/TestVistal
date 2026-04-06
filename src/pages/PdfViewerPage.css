@@ -1,0 +1,74 @@
+.pdf-viewer-page {
+  min-height: 100vh;
+  background: #0f1115;
+  display: flex;
+  flex-direction: column;
+  color: white;
+}
+
+.pdf-topbar {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 16px 20px;
+  background: #151922;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  position: sticky;
+  top: 0;
+  z-index: 20;
+}
+
+.pdf-back-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: #232937;
+  color: white;
+  border: none;
+  padding: 10px 14px;
+  border-radius: 10px;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.pdf-back-btn:hover {
+  background: #2d3445;
+}
+
+.pdf-title {
+  font-size: 18px;
+  font-weight: 700;
+  margin: 0;
+}
+
+.pdf-frame-wrapper {
+  flex: 1;
+  width: 100%;
+  overflow: hidden;
+  background: #111;
+}
+
+.pdf-frame {
+  width: 100%;
+  height: calc(100vh - 78px);
+  border: none;
+  user-select: none;
+  -webkit-user-select: none;
+  pointer-events: auto;
+}
+
+.pdf-protection-note {
+  text-align: center;
+  padding: 10px;
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.65);
+  background: #151922;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.pdf-viewer-empty {
+  min-height: 100vh;
+  background: #0f1115;
+  color: white;
+  padding: 24px;
+}

@@ -1,0 +1,26 @@
+{
+  "name": "VitalState",
+  "short_name": "VitalState",
+  "description": "Start your metabolic reset - Track your food choices with a simple color-coded system",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#F6F5F3",
+  "theme_color": "#124733",
+  "id": "/",
+  "scope": "/",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
