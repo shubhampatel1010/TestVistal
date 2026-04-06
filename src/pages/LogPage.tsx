@@ -622,8 +622,8 @@ export default function LogPage() {
         <>
           <div className="log-page">
             <div className="log-header">
-              <h1>Daily Log</h1>
-              <p>Track your meals, habits, and how you're feeling</p>
+              <h1>Daily Log TEst 2244</h1>
+              <p>Track your meals, habits, and how you're feeling utkarsh</p>
             </div>
 
             <div className="date-selector">
