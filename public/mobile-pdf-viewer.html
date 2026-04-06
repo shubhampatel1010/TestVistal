@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>PDF Viewer</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.4.168/pdf.min.mjs" type="module"></script>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: #0f1115;
+    overflow-y: auto;
+    overflow-x: hidden;
+    -webkit-user-select: none;
+    user-select: none;
+    -webkit-touch-callout: none;
+  }
+  #pdf-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 0;
+  }
+  canvas {
+    display: block;
+    max-width: 100%;
+    height: auto;
+    pointer-events: none;
+  }
+  #loading {
+    color: white;
+    font-family: sans-serif;
+    text-align: center;
+    padding: 40px 20px;
+    font-size: 16px;
+  }
+</style>
+</head>
+<body>
+<div id="loading">Loading PDF...</div>
+<div id="pdf-container"></div>
+
+<script type="module">
+  const pdfjsLib = await import('https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.4.168/pdf.min.mjs');
+  pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.4.168/pdf.worker.min.mjs';
+
+  const params = new URLSearchParams(window.location.search);
+  const file = params.get('file');
+  const startPage = parseInt(params.get('page') || '1', 10);
+
+  if (!file) {
+    document.getElementById('loading').textContent = 'No PDF file specified.';
+  } else {
+    try {
+      const pdf = await pdfjsLib.getDocument(file).promise;
+      document.getElementById('loading').style.display = 'none';
+      const container = document.getElementById('pdf-container');
+
+      for (let i = 1; i <= pdf.numPages; i++) {
+        const page = await pdf.getPage(i);
+        const scale = window.innerWidth / page.getViewport({ scale: 1 }).width;
+        const viewport = page.getViewport({ scale: Math.min(scale, 2) });
+
+        const canvas = document.createElement('canvas');
+        canvas.width = viewport.width;
+        canvas.height = viewport.height;
+        container.appendChild(canvas);
+
+        await page.render({
+          canvasContext: canvas.getContext('2d'),
+          viewport: viewport
+        }).promise;
+      }
+
+      // Scroll to requested page
+      if (startPage > 1) {
+        const targetCanvas = container.children[startPage - 1];
+        if (targetCanvas) {
+          targetCanvas.scrollIntoView();
+        }
+      }
+    } catch (err) {
+      document.getElementById('loading').textContent = 'Failed to load PDF.';
+      console.error(err);
+    }
+  }
+
+  // Disable right-click
+  document.addEventListener('contextmenu', e => e.preventDefault());
+
+  // Disable long-press save image
+  document.addEventListener('touchstart', e => {
+    if (e.target.tagName === 'CANVAS') {
+      e.target.style.pointerEvents = 'none';
+      setTimeout(() => { e.target.style.pointerEvents = 'none'; }, 100);
+    }
+  }, { passive: true });
+</script>
+</body>
+</html>

@@ -73,7 +73,7 @@ export default function PdfViewerPage() {
   const pdfUrl = `${window.location.origin}/${pdf}?v=${cacheBuster}`;
 
   const iframeSrc = isMobile
-    ? `https://mozilla.github.io/pdf.js/web/viewer.html?file=${encodeURIComponent(pdfUrl)}#page=${page}`
+    ? `${window.location.origin}/mobile-pdf-viewer.html?file=${encodeURIComponent(`/${pdf}?v=${cacheBuster}`)}&page=${page}`
     : `${pdfUrl}#page=${page}&toolbar=0&navpanes=0&scrollbar=1&view=FitH`;
 
   return (
