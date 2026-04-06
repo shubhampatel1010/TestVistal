@@ -622,7 +622,7 @@ export default function LogPage() {
         <>
           <div className="log-page">
             <div className="log-header">
-              <h1>Daily Log TEst Growwstacks</h1>
+              <h1>Daily Log</h1>
               <p>Track your meals, habits, and how you're feeling utkarsh Pandey</p>
             </div>
 
