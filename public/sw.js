@@ -1,5 +1,4 @@
-const CACHE_VERSION = Date.now();
-const CACHE_NAME = 'vitalstate-' + CACHE_VERSION;
+const CACHE_NAME = 'vitalstate-__SW_BUILD_ID__';
 const urlsToCache = [
   '/',
   '/index.html',
@@ -14,7 +13,6 @@ self.addEventListener('install', (event) => {
     caches.open(CACHE_NAME)
       .then((cache) => cache.addAll(urlsToCache))
   );
-  // Activate immediately, don't wait for old SW to finish
   self.skipWaiting();
 });
 
@@ -31,19 +29,16 @@ self.addEventListener('activate', (event) => {
       );
     })
   );
-  // Take control of all open tabs immediately
   self.clients.claim();
 });
 
-// Fetch: network-first strategy (always try fresh content first)
+// Fetch: network-first strategy
 self.addEventListener('fetch', (event) => {
-  // Skip non-GET requests
   if (event.request.method !== 'GET') return;
 
   event.respondWith(
     fetch(event.request)
       .then((response) => {
-        // Clone and cache the fresh response
         const responseClone = response.clone();
         caches.open(CACHE_NAME).then((cache) => {
           cache.put(event.request, responseClone);
@@ -51,13 +46,12 @@ self.addEventListener('fetch', (event) => {
         return response;
       })
       .catch(() => {
-        // Network failed, fall back to cache (offline support)
         return caches.match(event.request);
       })
   );
 });
 
-// Listen for messages to force update
+// Listen for skip waiting message
 self.addEventListener('message', (event) => {
   if (event.data && event.data.type === 'SKIP_WAITING') {
     self.skipWaiting();
