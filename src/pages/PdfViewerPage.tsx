@@ -1,11 +1,12 @@
 import { ArrowLeft } from "lucide-react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
 import "./PdfViewerPage.css";
 import { useEffect, useMemo } from "react";
 
 export default function PdfViewerPage() {
   const navigate = useNavigate();
   const location = useLocation();
+  const [searchParams, setSearchParams] = useSearchParams();
 
   const state = location.state as {
     pdf?: string;
@@ -13,9 +14,20 @@ export default function PdfViewerPage() {
     title?: string;
   };
 
-  const pdf = state?.pdf;
-  const page = state?.page || 1;
-  const title = state?.title || "PDF Viewer";
+  // Prefer state, fallback to URL query params (survives reload)
+  const pdf = state?.pdf || searchParams.get("pdf") || "";
+  const page = state?.page || parseInt(searchParams.get("page") || "1", 10);
+  const title = state?.title || searchParams.get("title") || "PDF Viewer";
+
+  // Sync state to URL params so reload works
+  useEffect(() => {
+    if (state?.pdf && !searchParams.get("pdf")) {
+      setSearchParams(
+        { pdf: state.pdf, page: String(state.page || 1), title: state.title || "PDF Viewer" },
+        { replace: true }
+      );
+    }
+  }, [state?.pdf]);
 
   useEffect(() => {
     const disableRightClick = (e: MouseEvent) => e.preventDefault();
@@ -50,11 +62,6 @@ export default function PdfViewerPage() {
     };
   }, []);
 
-  // Detect mobile
-  const isMobile = /Android|iPhone|iPad|iPod|Opera Mini|IEMobile|WPDesktop/i.test(
-    navigator.userAgent
-  );
-
   // Force fresh load every time page opens
   const cacheBuster = useMemo(() => Date.now(), []);
 
@@ -70,11 +77,7 @@ export default function PdfViewerPage() {
     );
   }
 
-  const pdfUrl = `${window.location.origin}/${pdf}?v=${cacheBuster}`;
-
-  const iframeSrc = isMobile
-    ? `${window.location.origin}/mobile-pdf-viewer.html?file=${encodeURIComponent(`/${pdf}?v=${cacheBuster}`)}&page=${page}`
-    : `${pdfUrl}#page=${page}&toolbar=0&navpanes=0&scrollbar=1&view=FitH`;
+  const iframeSrc = `${window.location.origin}/mobile-pdf-viewer.html?file=${encodeURIComponent(`/${pdf}?v=${cacheBuster}`)}&page=${page}`;
 
   return (
     <div className="pdf-viewer-page">
