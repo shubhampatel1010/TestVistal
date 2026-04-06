@@ -1470,7 +1470,7 @@ export default function LibraryPage() {
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        // setIsPageLoading(true);
+        setIsPageLoading(true);
         const storedUser = localStorage.getItem("userData");
         if (!storedUser) return;
 
@@ -1493,7 +1493,7 @@ export default function LibraryPage() {
         if (!res.ok) {
           console.error("Failed to fetch user");
           setIsPremium(false);
-          // setIsPageLoading(false);
+          setIsPageLoading(false);
           return;
         }
 
@@ -1531,15 +1531,15 @@ export default function LibraryPage() {
           }
 
           setIsPremium(true);
-          // setIsPageLoading(false); // ✅ page opens only after API finishes
+          setIsPageLoading(false); // ✅ page opens only after API finishes
         } else {
           setIsPremium(false);
-          // setIsPageLoading(false); // ✅ page opens only after API finishes
+          setIsPageLoading(false); // ✅ page opens only after API finishes
         }
       } catch (error) {
         console.error("Error fetching user:", error);
         setIsPremium(false);
-        // setIsPageLoading(false); // ✅ page opens only after API finishes
+        setIsPageLoading(false); // ✅ page opens only after API finishes
       }
     };
 
